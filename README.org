@@ -1,0 +1,144 @@
+#+title: Push, Pop, Done!
+#+author: Greg Pfeil <greg@technomadic.org>
+
+PPD is a simple stack-based task manager.
+
+As you start new tasks that interrupt your current task, you “push” them onto the stack. As you complete tasks, you “pop” them off the stack. Tasks can also be abandoned or deferred/resumed.
+
+* bindings
+
+To use this global minor mode, you most likely want to assign a prefix key to access the commands, like
+
+~(global-set-key (kbd "C-c p") 'ppd-mode-map)~
+
+After that, you can type the prefix key followed by the keys below to interact with PPD.
+
+#+name: bindings
+#+begin_src emacs-lisp
+(substitute-command-keys "\\{ppd-mode-map}")
+#+end_src
+
+#+RESULTS: bindings
+#+begin_example
+key             binding
+---             -------
+
+a               ppd-abandon-current-task
+c               ppd-clear-stacks
+d               ppd-defer-current-task
+f               ppd-finish-current-task
+h               ppd-helm
+n               ppd-start-new-task
+r               ppd-resume-deferred-task
+
+#+end_example
+
+* terminology
+
+We start a *new* task, which we can then *finish* successfully, *abandon* completely, or *defer* for now. We can *resume* deferred tasks that were originally created from the current task, giving an optional index if we don’t want to resume the most recently deferred task. Tasks deferred from points higher in the current stack are *inaccessible* until we are back at that point in the stack. Deferred (and inaccessible) tasks form sub-stacks to preserve everything as resumable from the correct point.
+
+If a task is finished or abandoned, it and everything deferred from it is moved to the *history*.
+
+* example
+
+You start working on a new project … ~<prefix>nmy new project<RET>~
+
+*current*
+- my new project
+
+You realize you need to add a feature to libother to make progress ~<prefix>nadd foo to libother<RET>~
+
+*current*
+- add foo to libother
+- my new project
+
+While working on libother, you realize that you do need to get this done, but for the time being you can instead make progress on a more important feature ~<prefix>d<prefix>nimplement important feature<RET>~
+
+*current*
+- implement important feature
+- my new project
+*deferred*
+0. add foo to libother
+
+You got that feature implemented! ~<prefix>f~
+
+*current*
+- add foo to libother
+- my new project
+*history*
+- implement important feature *finished* ()
+
+You decide you might not need libother after all, instead you’ll try to implement a simpler version yourself ~<prefix>d<prefix>nimplement other feature<RET>~
+
+*current*
+- implement other feature
+- my new project
+*deferred*
+0. add foo to libother
+*history*
+- implement important feature *finished* ()
+
+Oh, but this new feature needs libx, so ~<prefix>nintegrate libx<RET>~
+
+*current*
+- integrate libx
+- implement other feature
+- my new project
+*inaccessible*
+1. add foo to libother
+*history*
+- implement important feature *finished* ()
+
+Hrmm, before implementing anything else, it’s probably a good idea to get this up on GitHub … ~<prefix>d<prefix>d<prefix>npublish on GitHub<RET>~
+
+*current*
+- publish on GitHub
+- my new project
+*deferred*
+0. implement other feature
+   - integrate libx
+1. add foo to libother
+*history*
+- implement important feature *finished* ()
+
+Alright, got it published ~<prefix>f~
+
+*current*
+- implement other feature
+- my new project
+*deferred*
+0. integrate libx
+*inaccessible*
+0. add foo to libother
+*history*
+- publish on GitHub *finished* ()
+- implement important feature *finished* ()
+
+Maybe it’s better to fix libother than re-implementing this myself ~<prefix>a<prefix>r<RET>~
+
+*current*
+- add foo to libother
+- my new project
+*history*
+- implement other feature *abandoned* ((“integrate libx”))
+- publish on GitHub *finished* ()
+- implement important feature *finished* ()
+
+It was easy to add ~foo~, so ~<prefix>f~
+
+*current*
+- my new project
+*history*
+- add foo to libother *finished* ()
+- implement other feature *abandoned* ((“integrate libx”))
+- publish on GitHub *finished* ()
+- implement important feature *finished* ()
+
+And we’re done with our project ~<prefix>f~
+
+*history*
+- my new project *finished* ()
+- add foo to libother *finished* ()
+- implement other feature *abandoned* ((“integrate libx”))
+- publish on GitHub *finished* ()
+- implement important feature *finished* ()
