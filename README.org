@@ -43,33 +43,42 @@ If a task is finished or abandoned, it and everything deferred from it is moved 
 
 You start working on a new project … ~<prefix>nmy new project<RET>~
 
+#+begin_quote
 *current*
 - my new project
+#+end_quote
 
 You realize you need to add a feature to libother to make progress ~<prefix>nadd foo to libother<RET>~
 
+#+begin_quote
 *current*
 - add foo to libother
 - my new project
+#+end_quote
 
 While working on libother, you realize that you do need to get this done, but for the time being you can instead make progress on a more important feature ~<prefix>d<prefix>nimplement important feature<RET>~
 
+#+begin_quote
 *current*
 - implement important feature
 - my new project
 *deferred*
 0. add foo to libother
+#+end_quote
 
 You got that feature implemented! ~<prefix>f~
 
+#+begin_quote
 *current*
 - add foo to libother
 - my new project
 *history*
 - implement important feature *finished* ()
+#+end_quote
 
 You decide you might not need libother after all, instead you’ll try to implement a simpler version yourself ~<prefix>d<prefix>nimplement other feature<RET>~
 
+#+begin_quote
 *current*
 - implement other feature
 - my new project
@@ -77,9 +86,11 @@ You decide you might not need libother after all, instead you’ll try to implem
 0. add foo to libother
 *history*
 - implement important feature *finished* ()
+#+end_quote
 
 Oh, but this new feature needs libx, so ~<prefix>nintegrate libx<RET>~
 
+#+begin_quote
 *current*
 - integrate libx
 - implement other feature
@@ -88,9 +99,11 @@ Oh, but this new feature needs libx, so ~<prefix>nintegrate libx<RET>~
 1. add foo to libother
 *history*
 - implement important feature *finished* ()
+#+end_quote
 
 Hrmm, before implementing anything else, it’s probably a good idea to get this up on GitHub … ~<prefix>d<prefix>d<prefix>npublish on GitHub<RET>~
 
+#+begin_quote
 *current*
 - publish on GitHub
 - my new project
@@ -100,9 +113,11 @@ Hrmm, before implementing anything else, it’s probably a good idea to get this
 1. add foo to libother
 *history*
 - implement important feature *finished* ()
+#+end_quote
 
 Alright, got it published ~<prefix>f~
 
+#+begin_quote
 *current*
 - implement other feature
 - my new project
@@ -113,9 +128,11 @@ Alright, got it published ~<prefix>f~
 *history*
 - publish on GitHub *finished* ()
 - implement important feature *finished* ()
+#+end_quote
 
 Maybe it’s better to fix libother than re-implementing this myself ~<prefix>a<prefix>r<RET>~
 
+#+begin_quote
 *current*
 - add foo to libother
 - my new project
@@ -123,9 +140,11 @@ Maybe it’s better to fix libother than re-implementing this myself ~<prefix>a<
 - implement other feature *abandoned* ((“integrate libx”))
 - publish on GitHub *finished* ()
 - implement important feature *finished* ()
+#+end_quote
 
 It was easy to add ~foo~, so ~<prefix>f~
 
+#+begin_quote
 *current*
 - my new project
 *history*
@@ -133,12 +152,15 @@ It was easy to add ~foo~, so ~<prefix>f~
 - implement other feature *abandoned* ((“integrate libx”))
 - publish on GitHub *finished* ()
 - implement important feature *finished* ()
+#+end_quote
 
 And we’re done with our project ~<prefix>f~
 
+#+begin_quote
 *history*
 - my new project *finished* ()
 - add foo to libother *finished* ()
 - implement other feature *abandoned* ((“integrate libx”))
 - publish on GitHub *finished* ()
 - implement important feature *finished* ()
+#+end_quote
